@@ -1,4 +1,7 @@
+// edited by Zeng@2017年6月24日16:34:28
+
 #include <stdio.h>
+#include <filesystem>
 #include <direct.h>
 #include <tchar.h>
 #include <conio.h>
@@ -7,7 +10,7 @@
 #include <io.h>
 #include "opencv2/opencv.hpp"
 #include "VirtualFG30.h"
-
+#include <boost/filesystem.hpp>
 #pragma comment (lib, "VirtualFG30.lib")
 
 
@@ -15,8 +18,13 @@ using namespace std;
 using namespace cv;
 
 
-// HERE A SERIAL NUM LIST 
+// HERE A SERIAL NUM LIST
 
+//#define	SERIAL_NUM_CAMERA_ORDER_01     
+//#define	SERIAL_NUM_CAMERA_ORDER_02     
+//#define	SERIAL_NUM_CAMERA_ORDER_03     
+//#define	SERIAL_NUM_CAMERA_ORDER_04     
+//#define	SERIAL_NUM_CAMERA_ORDER_05     
 #define	SERIAL_NUM_CAMERA_ORDER_06     "221216C0006"
 #define	SERIAL_NUM_CAMERA_ORDER_07     "221216C0001"
 #define	SERIAL_NUM_CAMERA_ORDER_08     "221215A0011"
@@ -25,7 +33,7 @@ using namespace cv;
 #define	SERIAL_NUM_CAMERA_ORDER_11     "221216C0002"
 #define	SERIAL_NUM_CAMERA_ORDER_12     "221216C0003"
 #define	SERIAL_NUM_CAMERA_ORDER_13     "221216C0008"
-#define	SERIAL_NUM_CAMERA_ORDER_14     "221216A0012"
+#define	SERIAL_NUM_CAMERA_ORDER_14     "221215A0012"
 #define	SERIAL_NUM_CAMERA_ORDER_15     "221216C0005"
 #define	SERIAL_NUM_CAMERA_ORDER_16     "221216C0007"
 #define	SERIAL_NUM_CAMERA_ORDER_17     "22121369008"
@@ -383,6 +391,33 @@ void SetFeature(int hDevice)
 
 }
 
+int DeleteYourFile(char* prefix)
+{
+	if (_access(prefix, 0) == 0)
+	{
+		//SetFileAttributes(prefix0, FILE_ATTRIBUTE_NORMAL);     //设定为一般 (取消前四种属性)
+		// 0.using boost library
+		if (boost::filesystem::remove_all(prefix) == 1)
+		{
+			printf("now delete exsiting data in %s \npress anykey to continue...\n ", prefix);
+			getchar();
+			printf("Removed %s.\n", prefix);
+		}
+		else
+		{
+			perror("remove_all");
+		}
+		printf("create a new one for you in %s...\n", prefix);
+		mkdir(prefix);
+	}
+	else
+	{
+		printf("file in %s does not exsit...\ncreate a new one for you...\n", prefix);
+		mkdir(prefix);
+	}
+	return 0;
+}
+
 int CameraNum1()
 {
 	printf("now 1 camera connected\n" );
@@ -418,16 +453,11 @@ int CameraNum1()
 	strcpy(temp, "");
 	sprintf(temp,"v%d", ordernum0);
 	sprintf(prefix0, "%s%s", ROOTPATH, temp);
-	string dirName = prefix0;
-	bool git = false;
-	printf("now delete exsiting data in %s \npress anykey to continue...\n ", prefix0);
-	getchar();
-	// 怎么删除文件夹?
-	if (_access(dirName.c_str(), 0) == 0)
-	{
 
-		DeleteFile(prefix0);
-	}
+
+
+	// 怎么删除文件夹?
+	DeleteYourFile(prefix0);
 	SetFeature(hDevice0);
 	//
 	try
@@ -591,29 +621,13 @@ int CameraNum2()
 	strcpy(temp, "");
 	sprintf(temp, "v%d", ordernum0);
 	sprintf(prefix0, "%s%s", ROOTPATH, temp);
-	string dirName = prefix0;
-	printf("now delete exsiting data in %s \npress anykey to continue...\n ", prefix0);
-	getchar();
-	// 怎么删除文件夹?
-	if (_access(dirName.c_str(), 0) == 0)
-	{
-
-		DeleteFile(prefix0);
-	}
+	DeleteYourFile(prefix0);
 	//2
 	strcpy(temp, "");
 	sprintf(temp, "v%d", ordernum1);
 	sprintf(prefix1, "%s%s", ROOTPATH, temp);
-	dirName = prefix1;
-	printf("now delete exsiting data in %s \npress anykey to continue...\n ", prefix1);
-	getchar();
-	// 怎么删除文件夹?
-	if (_access(dirName.c_str(), 0) == 0)
-	{
-
-		DeleteFile(prefix1);
-	}
-
+	// 删除文件夹
+	DeleteYourFile(prefix1);
 	SetFeature(hDevice0);
 	SetFeature(hDevice1);
 	try
@@ -719,8 +733,6 @@ int CameraNum2()
 				++endFrame;
 			}
 
-
-
 			if (_kbhit())
 			{
 				break;
@@ -810,41 +822,17 @@ int CameraNum3()
 	strcpy(temp, "");
 	sprintf(temp, "v%d", ordernum0);
 	sprintf(prefix0, "%s%s", ROOTPATH, temp);
-	string dirName = prefix0;
-	printf("now delete exsiting data in %s \npress anykey to continue...\n ", prefix0);
-	getchar();
-	// 怎么删除文件夹?
-	if (_access(dirName.c_str(), 0) == 0)
-	{
-
-		DeleteFile(prefix0);
-	}
+	DeleteYourFile(prefix0);
 	//2
 	strcpy(temp, "");
 	sprintf(temp, "v%d", ordernum1);
 	sprintf(prefix1, "%s%s", ROOTPATH, temp);
-	dirName = prefix1;
-	printf("now delete exsiting data in %s \npress anykey to continue...\n ", prefix1);
-	getchar();
-	// 怎么删除文件夹?
-	if (_access(dirName.c_str(), 0) == 0)
-	{
-
-		DeleteFile(prefix1);
-	}
-	//2
+	DeleteYourFile(prefix1);
+	//3
 	strcpy(temp, "");
 	sprintf(temp, "v%d", ordernum2);
 	sprintf(prefix2, "%s%s", ROOTPATH, temp);
-	dirName = prefix2;
-	printf("now delete exsiting data in %s \npress anykey to continue...\n ", prefix2);
-	getchar();
-	// 怎么删除文件夹?
-	if (_access(dirName.c_str(), 0) == 0)
-	{
-
-		DeleteFile(prefix2);
-	}
+	DeleteYourFile(prefix2);
 
 	SetFeature(hDevice0);
 	SetFeature(hDevice1);
